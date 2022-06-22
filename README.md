@@ -20,17 +20,17 @@ transcription factor binding sites; residual learning; attention mechanism; CNN;
 
 # Code file description
 ```
-├── config.py # Modify hyperparameters
-├── data_process.py # Data preprocessing
-├── logs_run # log file
-├── models # models
+├── config.py            # Modify hyperparameters
+├── data_process.py      # Data preprocessing
+├── logs_run             # log file
+├── models               # models
 │ ├── DanQ.py
 │ ├── DeepBind.py
 │ ├── DeepD2V.py
 │ └── ResHybridAtt.py
-├── run_all.py # run all datasets
-├── run.py # run a dataset alone
-├── start.sh # run multiple commands at once
-├── train_eval.py # training, validation
-└── utils.py # Common functions
+├── run_all.py           # run all datasets
+├── run.py               # run a dataset alone
+├── start.sh             # run multiple commands at once
+├── train_eval.py        # training, validation
+└── utils.py             # Common functions
 ```
