@@ -25,14 +25,16 @@ def get_res(path):
 
 
 if __name__ == "__main__":
-    path0 = '../res/cnnLstmAtt_11_res.txt' # ResHybridDeep
+    path0 = '../res/CRA-KAN_res.txt' # CRA-KAN
     path1 = '../res/DeepBind_res.txt'
     path2 = '../res/DanQ_res.txt'
-    path3 = '../res/DeepD2V_10kfold_L_res.txt' # DeepD2V
+    path3 = '../res/DeepD2V_res.txt' # DeepD2V
+    path4 = '../res/DeepSEA_res.txt' # DeepSEA
     att_res = get_res(path0) # att
     DeepBind_res = get_res(path1)
     DanQ_res = get_res(path2)
     DeepD2V_res = get_res(path3)
+    DeepSEA_res = get_res(path4)
     print(att_res)
     # x = np.linspace(0, 1, 50)
     # y = cnnLstmAtt_1_res['roc_auc']
@@ -43,114 +45,156 @@ if __name__ == "__main__":
     # plt.show()
     
     # ROC AUC
-    pl = plt.figure(figsize=(8,8), dpi=100)
-    ax1 = pl.add_subplot(3,3,1)
+    pl = plt.figure(figsize=(12,8), dpi=100)
+    ax1 = pl.add_subplot(3,4,1)
     plt.title('ROC AUC')
     plt.xlabel('DeepBind')
-    plt.ylabel('ResHybridDeep')
+    plt.ylabel('CRA-KAN')
     plt.plot([0.8,1], [0.8,1], ls="--", c=".3")
     y = att_res['roc_auc']
     x = DeepBind_res['roc_auc']
     plt.scatter(x, y, s=10)
-    plt.tight_layout(1.3)
+    plt.tight_layout()
     # plt.show()
 
     # PR AUC
-    ax4 = pl.add_subplot(3,3,4)
+    ax4 = pl.add_subplot(3,4,5)
     plt.title('PR AUC')
     plt.xlabel('DeepBind')
-    plt.ylabel('ResHybridDeep')
+    plt.ylabel('CRA-KAN')
     plt.plot([0.7,1], [0.7,1], ls="--", c=".3")
     y = att_res['pr_auc']
     x = DeepBind_res['pr_auc']
     plt.scatter(x, y, s=10)
-    plt.tight_layout(1.3)
+    plt.tight_layout()
 
     # plt.show()
 
     # f1
-    ax7 = pl.add_subplot(3,3,7)
+    ax7 = pl.add_subplot(3,4,9)
     plt.title('F1')
     plt.xlabel('DeepBind')
-    plt.ylabel('ResHybridDeep')
+    plt.ylabel('CRA-KAN')
     plt.plot([0.75,1], [0.75,1], ls="--", c=".3")
     y = att_res['f1']
     x = DeepBind_res['f1']
     plt.scatter(x, y, s=10)
-    plt.tight_layout(1.3)
+    plt.tight_layout()
     # plt.show()
 
 
-    ax2 = pl.add_subplot(3,3,2)
+    ax2 = pl.add_subplot(3,4,2)
     plt.title('ROC AUC')
     plt.xlabel('DanQ')
-    plt.ylabel('ResHybridDeep')
+    plt.ylabel('CRA-KAN')
     plt.plot([0.8,1], [0.8,1], ls="--", c=".3")
     y = att_res['roc_auc']
     x = DanQ_res['roc_auc']
     plt.scatter(x, y, s=10)
-    plt.tight_layout(1.3)
+    plt.tight_layout()
     # plt.show()
 
     # PR AUC
-    ax5 = pl.add_subplot(3,3,5)
+    ax5 = pl.add_subplot(3,4,6)
     plt.title('PR AUC')
     plt.xlabel('DanQ')
-    plt.ylabel('ResHybridDeep')
+    plt.ylabel('CRA-KAN')
     plt.plot([0.7,1], [0.7,1], ls="--", c=".3")
     y = att_res['pr_auc']
     x = DanQ_res['pr_auc']
     plt.scatter(x, y, s=10)
-    plt.tight_layout(1.3)
+    plt.tight_layout()
 
     # plt.show()
 
     # f1
-    ax8 = pl.add_subplot(3,3,8)
+    ax8 = pl.add_subplot(3,4,10)
     plt.title('F1')
     plt.xlabel('DanQ')
-    plt.ylabel('ResHybridDeep')
+    plt.ylabel('CRA-KAN')
     plt.plot([0.75,1], [0.75,1], ls="--", c=".3")
     y = att_res['f1']
     x = DanQ_res['f1']
     plt.scatter(x, y, s=10)
-    plt.tight_layout(1.3)
+    plt.tight_layout()
 
     # ROC AUC
-    ax3 = pl.add_subplot(3,3,3)
+    ax3 = pl.add_subplot(3,4,3)
     plt.title('ROC AUC')
     plt.xlabel('DeepD2V')
-    plt.ylabel('ResHybridDeep')
+    plt.ylabel('CRA-KAN')
     plt.plot([0.85,1], [0.85,1], ls="--", c=".3")
-    y = att_res['roc_auc']
-    x = DeepD2V_res['roc_auc']
+    # y = att_res['roc_auc']
+    # x = DeepD2V_res['roc_auc']
+    x = DeepD2V_res['roc_auc'][DeepD2V_res['roc_auc'] > 0.75]
+    y = att_res['roc_auc'][x.index]
     plt.scatter(x, y, s=10)
-    plt.tight_layout(1.3)
+    plt.tight_layout()
     # plt.show()
 
     # PR AUC
-    ax6 = pl.add_subplot(3,3,6)
+    ax6 = pl.add_subplot(3,4,7)
     plt.title('PR AUC')
     plt.xlabel('DeepD2V')
-    plt.ylabel('ResHybridDeep')
+    plt.ylabel('CRA-KAN')
     plt.plot([0.75,1], [0.75,1], ls="--", c=".3")
-    y = att_res['pr_auc']
-    x = DeepD2V_res['pr_auc']
+    # y = att_res['pr_auc']
+    # x = DeepD2V_res['pr_auc']
+    x = DeepD2V_res['pr_auc'][DeepD2V_res['pr_auc'] > 0.75]
+    y = att_res['pr_auc'][x.index]
     plt.scatter(x, y, s=10)
-    plt.tight_layout(1.3)
+    plt.tight_layout()
 
     # plt.show()
 
     # f1
-    ax9 = pl.add_subplot(3,3,9)
+    ax9 = pl.add_subplot(3,4,11)
     plt.title('F1')
     plt.xlabel('DeepD2V')
-    plt.ylabel('ResHybridDeep')
+    plt.ylabel('CRA-KAN')
+    plt.plot([0.78,1], [0.78,1], ls="--", c=".3")
+    # y = att_res['f1']
+    # x = DeepD2V_res['f1']
+    x = DeepD2V_res['f1'][DeepD2V_res['f1'] > 0.75]
+    y = att_res['f1'][x.index]
+    plt.scatter(x, y, s=10)
+    plt.tight_layout()
+
+    # ROC AUC
+    ax3 = pl.add_subplot(3,4,4)
+    plt.title('ROC AUC')
+    plt.xlabel('DeepSEA')
+    plt.ylabel('CRA-KAN')
+    plt.plot([0.85,1], [0.85,1], ls="--", c=".3")
+    y = att_res['roc_auc']
+    x = DeepSEA_res['roc_auc']
+    plt.scatter(x, y, s=10)
+    plt.tight_layout()
+    # plt.show()
+
+    # PR AUC
+    ax6 = pl.add_subplot(3,4,8)
+    plt.title('PR AUC')
+    plt.xlabel('DeepSEA')
+    plt.ylabel('CRA-KAN')
+    plt.plot([0.75,1], [0.75,1], ls="--", c=".3")
+    y = att_res['pr_auc']
+    x = DeepSEA_res['pr_auc']
+    plt.scatter(x, y, s=10)
+    plt.tight_layout()
+
+    # plt.show()
+
+    # f1
+    ax9 = pl.add_subplot(3,4,12)
+    plt.title('F1')
+    plt.xlabel('DeepSEA')
+    plt.ylabel('CRA-KAN')
     plt.plot([0.78,1], [0.78,1], ls="--", c=".3")
     y = att_res['f1']
-    x = DeepD2V_res['f1']
+    x = DeepSEA_res['f1']
     plt.scatter(x, y, s=10)
-    plt.tight_layout(1.3)
+    plt.tight_layout()
 
     plt.show()
     pass

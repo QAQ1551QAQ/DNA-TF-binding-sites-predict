@@ -1,3 +1,7 @@
+import sys 
+sys.path.append(r"../efficient_kan")
+from src.efficient_kan import KAN
+
 import torch.nn as nn
 import torch
 import torch.nn.functional as F
@@ -11,34 +15,35 @@ class Model(nn.Module):
         else:
             self.embedding = nn.Embedding(config.len_vocab, config.embed, padding_idx=config.len_vocab - 1)
 
-        self.cnn2 = nn.Sequential(
-            nn.Conv1d(in_channels=100,out_channels=128,kernel_size=12),
+        self.cnn1 = nn.Sequential(
+            nn.Conv1d(in_channels=100, out_channels=160, kernel_size=9),
             nn.ReLU(True),
             nn.MaxPool1d(2),
-            nn.Conv1d(in_channels=128,out_channels=256,kernel_size=8),
+            nn.Conv1d(in_channels=160, out_channels=160, kernel_size=1),
+            nn.ReLU(True),
+            nn.MaxPool1d(2),
+            nn.Conv1d(in_channels=160, out_channels=160, kernel_size=5),
+            nn.ReLU(True),
+            nn.MaxPool1d(2),
+            nn.Conv1d(in_channels=160, out_channels=256, kernel_size=8),
+            nn.ReLU(True),
+            nn.MaxPool1d(2),
+        )
+        
+        self.cnn2 = nn.Sequential(
+            nn.Conv1d(in_channels=100, out_channels=128, kernel_size=11),
+            nn.ReLU(True),
+            nn.MaxPool1d(2),
+            nn.Conv1d(in_channels=128, out_channels=256, kernel_size=9),
             nn.ReLU(True),
             nn.MaxPool1d(2),
         )
 
-        self.cnn1 = nn.Sequential(
-            nn.Conv1d(in_channels=100,out_channels=160,kernel_size=9),
-            nn.ReLU(True),
-            nn.MaxPool1d(2),
-            nn.Conv1d(in_channels=160,out_channels=160,kernel_size=1),
-            nn.ReLU(True),
-            nn.MaxPool1d(2),
-            nn.Conv1d(in_channels=160,out_channels=160,kernel_size=5),
-            nn.ReLU(True),
-            nn.MaxPool1d(2),
-            nn.Conv1d(in_channels=160,out_channels=256,kernel_size=8),
-            nn.ReLU(True),
-            nn.MaxPool1d(2),
-        )
         self.cnn3 = nn.Sequential(
-            nn.Conv1d(in_channels=100,out_channels=180,kernel_size=1),
+            nn.Conv1d(in_channels=100, out_channels=180, kernel_size=1),
             nn.ReLU(True),
             nn.MaxPool1d(2),
-            nn.Conv1d(in_channels=180,out_channels=256,kernel_size=8),
+            nn.Conv1d(in_channels=180, out_channels=256, kernel_size=8),
             nn.ReLU(True),
             nn.MaxPool1d(2),
         )
@@ -49,18 +54,18 @@ class Model(nn.Module):
         )
 
         self.tanh1 = nn.Tanh()
-        self.dropout = nn.Dropout(0.1)
+        self.dropout = nn.Dropout(0.2)
         # self.w = nn.Parameter(torch.zeros(128 * 2))
         self.w = nn.Parameter(torch.normal(0,1,(1,128 * 2))).squeeze(0).to(config.device)
         self.norm = nn.LayerNorm(256)
-
-        self.fc = nn.Sequential(nn.ReLU(),nn.Dropout(0.1),nn.Linear(128 * 2, 64),
-                                nn.ReLU(),nn.Dropout(0.2),nn.Linear(64, 2)  
-        )
+        self.e_kan = KAN([256, 32, 2])
+        #self.fc = nn.Sequential(nn.ReLU(),nn.Dropout(0.2),nn.Linear(128 * 2, 64),
+        #                        nn.ReLU(),nn.Dropout(0.2),nn.Linear(64, 2)  
+        #)
 
     def forward(self, x):
         # out = self.embedding(x[0]) # [batch_size, seq_len, embedding_dim]
-        out = self.embedding(x[0]).permute(0, 2, 1) # [batch_size, embedding_dim, seq_len]
+        out = self.embedding(x).permute(0, 2, 1) # [batch_size, embedding_dim, seq_len]
         # CNN
         out1 = self.cnn1(self.dropout(out)).permute(0, 2, 1) # [batch_size, seq_len, embedding_dim]
         out2 = self.cnn2(self.dropout(out)).permute(0, 2, 1)
@@ -75,5 +80,6 @@ class Model(nn.Module):
         out = out + att_out
         out = torch.sum(self.norm(out), 1) #[batch_size, embedding_dim]
         # FC
-        out = self.fc(out) #[batch_size, num_classes]
+        #out = self.fc(out) #[batch_size, num_classes]
+        out = self.e_kan(out)
         return out

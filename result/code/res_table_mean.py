@@ -27,42 +27,45 @@ def get_res(path):
 if __name__ == "__main__":
     path1 = '../res/DeepBind_res.txt'
     path2 = '../res/DanQ_res.txt'
-    path3 = '../res/DeepD2V_10kfold_L_res.txt'
-    path4 = '../res/cnnLstmAtt_11_res.txt' # ResHybridDeep
-    
+    path3 = '../res/DeepD2V_res.txt'
+    path4 = '../res/DeepSEA_res.txt'
+    path5 = '../res/CRA-KAN_res.txt' # CRA-KAN
+
     DeepBind_res = get_res(path1)
     DanQ_res = get_res(path2)
     DeepD2V_res = get_res(path3)
-    att_res = get_res(path4)
+    DeepSEA_res = get_res(path4)
+    att_res = get_res(path5)# CRA-KAN
 
     DeepBind_mean = pd.DataFrame(DeepBind_res.mean()).T
     DanQ_mean = pd.DataFrame(DanQ_res.mean()).T
     DeepD2V_mean = pd.DataFrame(DeepD2V_res.mean()).T
+    DeepSEA_mean = pd.DataFrame(DeepSEA_res.mean()).T
     att_mean = pd.DataFrame(att_res.mean()).T
 
-    result =  pd.concat([DeepBind_mean, DanQ_mean, DeepD2V_mean, att_mean], axis=0)
-    result.index = ['DeepBind','DanQ', 'DeepD2V', 'ResHybridDeep']
+    result =  pd.concat([DeepBind_mean, DanQ_mean, DeepD2V_mean, DeepSEA_mean, att_mean], axis=0)
+    result.index = ['DeepBind','DanQ', 'DeepD2V', 'DeepSEA', 'CRA-KAN']
     print(result)
     # result.to_csv('../res/res_table_mean.csv')
     res_plt = result[["f1", "acc", "pr_auc", "roc_auc"]]
-    tick_label=['DeepBind','DanQ', 'DeepD2V', 'ResHybridDeep']
+    tick_label=['DeepBind','DanQ', 'DeepD2V', 'DeepSEA', 'CRA-KAN']
     width = 0.42
-    x = np.arange(0,8,2)
+    x = np.arange(0,10,2)
 
-    fig = plt.figure(figsize = (12,8))
-    plt.bar(x, res_plt.loc[:,'f1'],width, label='F1-score',color="c",alpha=0.5)
+    fig = plt.figure(figsize = (14,8))
+    plt.bar(x, res_plt.loc[:,'f1'],width, label='F1-score',color="c",alpha=0.35)
     for i, j in zip(x, res_plt.loc[:,'f1']):
         plt.text(i+0.001,j+0.001, '%.3f'%j, ha='center')
 
-    plt.bar(x+ width, res_plt.loc[:,'acc'], width, label='Accuracy',color="b", alpha=0.5)
+    plt.bar(x+ width, res_plt.loc[:,'acc'], width, label='Accuracy',color="b", alpha=0.35)
     for i, j in zip(x+ width, res_plt.loc[:,'acc']):
         plt.text(i+0.001,j+0.001, '%.3f'%j, ha='center')
 
-    plt.bar(x+ 2*width, res_plt.loc[:,'pr_auc'], width,label='PR AUC', color="y",alpha=0.5)
+    plt.bar(x+ 2*width, res_plt.loc[:,'pr_auc'], width,label='PR AUC', color="y",alpha=0.35)
     for i, j in zip(x+ 2*width, res_plt.loc[:,'pr_auc']):
         plt.text(i+0.001,j+0.001, '%.3f'%j, ha='center')
 
-    plt.bar(x+ 3*width, res_plt.loc[:,'roc_auc'], width,label='ROC AUC',color="chocolate",alpha=0.7)
+    plt.bar(x+ 3*width, res_plt.loc[:,'roc_auc'], width,label='ROC AUC',color="chocolate",alpha=0.5)
     for i, j in zip(x+ 3*width, res_plt.loc[:,'roc_auc']):
         plt.text(i+0.001,j+0.001, '%.3f'%j, ha='center')
 

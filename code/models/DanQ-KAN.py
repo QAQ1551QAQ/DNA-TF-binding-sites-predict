@@ -1,4 +1,7 @@
 #conding=utf-8
+import sys 
+sys.path.append(r"../efficient_kan")
+from src.efficient_kan import KAN
 import torch.nn as nn
 import torch.nn.functional as F
 
@@ -9,6 +12,7 @@ class Model(nn.Module):
             self.embedding = nn.Embedding.from_pretrained(config.embedding_pretrained, freeze=False)
         else:
             self.embedding = nn.Embedding(config.len_vocab, config.embed, padding_idx=config.len_vocab - 1)
+        config.learning_rate = 0.001
         self.Conv1 = nn.Conv1d(in_channels=100, out_channels=32, kernel_size=8)
         self.Maxpool = nn.MaxPool1d(2)
         self.Drop1 = nn.Dropout(p=0.2)
@@ -16,9 +20,8 @@ class Model(nn.Module):
                                  batch_first=True,
                                  dropout=0.5,
                                  bidirectional=True) 
-        config.learning_rate = 0.001
-        self.Linear1 = nn.Linear(64, 32)
-        self.Linear2 = nn.Linear(32, 2)
+        #self.Linear1 = nn.Linear(64, 32)
+        self.e_kan = KAN([64, 32, 2])
 
     def forward(self, x):
         x = self.embedding(x) # [batch_size, seq_len, embedding_dim]
@@ -30,7 +33,6 @@ class Model(nn.Module):
         x, (h_n,h_c) = self.BiLSTM(x)
         #x, h_n = self.BiGRU(x_x)
         x = x[:, -1, :]
-        x = self.Linear1(x)
-        x = F.relu(x)
-        x = self.Linear2(x)
+        #x = self.Linear1(x)
+        x = self.e_kan(x)
         return x

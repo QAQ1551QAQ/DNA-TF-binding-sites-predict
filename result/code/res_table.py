@@ -26,23 +26,26 @@ def get_res(path):
 def get_roc_pr_f1(roc_pr_f1_name):
     DeepBind_roc= DeepBind_res[['Cell Line','TF', roc_pr_f1_name]].reset_index(drop=True)  #'roc_auc'
     DanQ_roc = DanQ_res[[roc_pr_f1_name]].reset_index(drop=True) 
-    DeepD2V_roc = DeepD2V_res[[roc_pr_f1_name]].reset_index(drop=True) 
+    DeepD2V_roc = DeepD2V_res[[roc_pr_f1_name]].reset_index(drop=True)
+    DeepSEA_roc = DeepSEA_res[[roc_pr_f1_name]].reset_index(drop=True)
     att_roc = att_res[[roc_pr_f1_name]].reset_index(drop=True) 
-    result =  pd.concat([DeepBind_roc, DanQ_roc, DeepD2V_roc, att_roc], axis=1)
-    result.columns =['Cell Line','TF','DeepBind', 'DanQ', 'DeepD2V', 'ResHybridDeep']
+    result =  pd.concat([DeepBind_roc, DanQ_roc, DeepD2V_roc, DeepSEA_roc, att_roc], axis=1)
+    result.columns =['Cell Line','TF','DeepBind', 'DanQ', 'DeepD2V', 'DeepSEA', 'CRA-KAN']
     print(result)
-    result.to_csv('../res/res_table_%s.csv'%roc_pr_f1_name, index=None)
+    result.to_csv('../figureAndResult/res_table_%s.csv'%roc_pr_f1_name, index=None)
 
 if __name__ == "__main__":
     path1 = '../res/DeepBind_res.txt'
     path2 = '../res/DanQ_res.txt'
-    path3 = '../res/DeepD2V_10kfold_L_res.txt'
-    path4 = '../res/cnnLstmAtt_11_res.txt' # ResHybridDeep
+    path3 = '../res/DeepD2V_res.txt'
+    path4 = '../res/DeepSEA_res.txt'
+    path5 = '../res/CRA-KAN_res.txt' # CRA-KAN
     
     DeepBind_res = get_res(path1)
     DanQ_res = get_res(path2)
     DeepD2V_res = get_res(path3)
-    att_res = get_res(path4)
+    DeepSEA_res = get_res(path4)
+    att_res = get_res(path5)
 
     get_roc_pr_f1('roc_auc')
     get_roc_pr_f1('pr_auc')

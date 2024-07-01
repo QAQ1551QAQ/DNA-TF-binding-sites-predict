@@ -1,3 +1,6 @@
+import sys 
+sys.path.append(r"../efficient_kan")
+from src.efficient_kan import KAN
 import torch.nn as nn
 import torch
 import torch.nn.functional as F
@@ -10,6 +13,7 @@ class Model(nn.Module):
             self.embedding = nn.Embedding.from_pretrained(config.embedding_pretrained, freeze=False)
         else:
             self.embedding = nn.Embedding(config.len_vocab, config.embed, padding_idx=config.len_vocab - 1)
+
         config.learning_rate = 0.001
         self.cnn = nn.Sequential(
             nn.Conv1d(in_channels=100,
@@ -49,20 +53,16 @@ class Model(nn.Module):
                     bias=True)
         )
 
-        self.Prediction = nn.Sequential(
-            nn.Linear(64, 32),
-            nn.Dropout(0.1),
-            nn.Linear(32,2),
-        )
+        self.e_kan = KAN([64, 32, 2])
 
     def forward(self, x):
         # out = self.embedding(x[0]) # [batch_size, seq_len, embedding_dim]
         out = self.embedding(x).permute(0, 2, 1) # [batch_size, embedding_dim, seq_len]
         # CNN
-        cnn_output = self.cnn(out) # [batch_size, seq_len, embedding_dim]
-        # print(cnn_output.shape)
-        bilstm_out, _ = self.BiLSTM(cnn_output)
-        bilstm_out = bilstm_out[:, -1, :]
-        out = self.Prediction(bilstm_out)
+        out = self.cnn(out) # [batch_size, seq_len, embedding_dim]
+        # RNN-Att
+        lstm_out,(H,C) = self.BiLSTM(out) #[batch_size, seq_len, embedding_dim]
+        out = lstm_out[:, -1, :]
+        # kan
+        out = self.e_kan(out) 
         return out
-
