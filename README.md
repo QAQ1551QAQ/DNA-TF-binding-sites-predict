@@ -29,15 +29,25 @@ transcription factor binding sites; residual learning; attention mechanism; CNN;
 ├── models # models
 
 │ └── DeepBind.py              # Single-layer CNN + Two-layer MLP
+
 │ └── DeepBind-KAN.py          # Single-layer CNN + KAN
+
 │ └── DanQ.py                  # Single-layer CNN + BiLSTM + Two-layer MLP
+
 │ └── DanQ-KAN.py              # Single-layer CNN + BiLSTM + KAN
+
 │ └── DeepD2V.py               # Three-layer CNN + BiLSTM + Two-layer MLP
+
 │ └── DeepD2V-KAN.py           # Three-layer CNN + BiLSTM + KAN
+
 │ └── DeepSEA.py               # Three-layer CNN + Two-layer MLP
+
 │ └── DeepSEA-KAN.py           # Three-layer CNN + KAN
+
 │ └── RA-KAN.py                # BiLSTM + attention + KAN
+
 │ └── CRA-KAN(ConvBlock1).py   # ConvBlock1 + BiLSTM + attention + KAN
+
 │ └── CRA-KAN.py               # ConvBlock1/2/3 concatenation +  BiLSTM + attention + KAN
 
 ├── run_all.py # run all datasets
