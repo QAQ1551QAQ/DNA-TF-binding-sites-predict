@@ -2,7 +2,7 @@
 import torch
 import numpy as np
 #模型
-model_name ='ResHybridAtt'   # ['textCNN', 'cnnLstm', 'cnnLstmAtt', 'textLstmAtt', 'textLstmCnn', 'transformer', 'dpCnn', 'DanQ', ,'DeepBind']
+model_name ='CRA-KAN'
 save_path = '../model_saved_dict/' + model_name + '.ckpt'        # 模型训练结果
 log_path = '../log/' + model_name
 w2v_dir = '../data/3mer.txt'
