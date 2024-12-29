@@ -8,6 +8,7 @@ import time
 from utils import get_time_dif
 from tensorboardX import SummaryWriter
 import utils   
+from sklearn.metrics import matthews_corrcoef
 
 def init_network(model, method='xavier', exclude='embedding', seed=2021):
     for name, w in model.named_parameters():
@@ -24,7 +25,7 @@ def init_network(model, method='xavier', exclude='embedding', seed=2021):
             else:
                 pass
 
-def train(config, model, train_iter, dev_iter, test_iter):
+def train(config, model, train_iter, dev_iter, test_iter,file):
     start_time = time.time()
     model.train()
     optimizer = torch.optim.Adam(model.parameters(), lr=config.learning_rate)
@@ -65,10 +66,15 @@ def train(config, model, train_iter, dev_iter, test_iter):
                 time_dif = get_time_dif(start_time)
                 msg = 'Iter: {0:>6},  Train Loss: {1:>5.2},  Train Acc: {2:>6.2%},  Val Loss: {3:>5.2},  Val roc_auc: {4:>6.2%},  Time: {5} {6}'
                 print(msg.format(total_batch, loss.item(), train_acc, dev_loss, roc_auc, time_dif, improve))
-                writer.add_scalar("loss/train", loss.item(), total_batch)
-                writer.add_scalar("loss/dev", dev_loss, total_batch)
-                writer.add_scalar("acc/train", train_acc, total_batch)
-                writer.add_scalar("acc/dev", dev_acc, total_batch)
+                #writer.add_scalar("loss/train", loss.item(), total_batch)
+                #writer.add_scalar("loss/dev", dev_loss, total_batch)
+                #writer.add_scalar("acc/train", train_acc, total_batch)
+                #writer.add_scalar("acc/dev", dev_acc, total_batch)
+                writer.add_scalar("loss/train", loss.item(), epoch + 1 )
+                writer.add_scalar("loss/dev", dev_loss, epoch + 1 )
+                writer.add_scalar("acc/train", train_acc, epoch + 1 )
+                writer.add_scalar("acc/dev", dev_acc, epoch + 1 )
+
                 model.train()
             total_batch += 1
             if total_batch - last_improve > config.require_improvement:
@@ -80,15 +86,17 @@ def train(config, model, train_iter, dev_iter, test_iter):
             break
         scheduler.step() #学习率衰减
     writer.close()
-    roc_auc, pr_auc, pre, rec, test_acc,f1 = test(config, model, test_iter)
-    return roc_auc, pr_auc, pre, rec, test_acc,f1
+    mcc, roc_auc, pr_auc, pre, rec, test_acc,f1 = test(config, model, test_iter, file)
+    return mcc, roc_auc, pr_auc, pre, rec, test_acc,f1
 
-def test(config, model, test_iter):
+def test(config, model, test_iter, file):
     # test
     model.load_state_dict(torch.load(config.save_path))
     model.eval()
     start_time = time.time()
-    test_acc, test_loss, test_report, test_confusion, roc_auc,pr_auc,f1,pre,rec= evaluate(config, model, test_iter, test=True)
+    mcc, test_acc, test_loss, test_report, test_confusion, roc_auc,pr_auc,f1,pre,rec,labels_all, predict_all ,prob_all= evaluate(config, model, test_iter, test=True)
+    np.savez('../data/save_roc_plot/%s.npz'%(config.model_name + '_' + str(file)),
+            labels_all=labels_all, predict_all=predict_all, prob_all=prob_all)
     msg = 'Test Loss: {0:>5.2},  Test Acc: {1:>6.2%}'
     print(msg.format(test_loss, test_acc))
     print("Precision, Recall and F1-Score...")
@@ -104,7 +112,7 @@ def test(config, model, test_iter):
         fw.write(msg.format(test_loss, test_acc))
         fw.write(test_report)
         fw.write('roc_auc: {},  pr_auc: {},  f1: {}'.format(roc_auc, pr_auc, f1))
-    return roc_auc, pr_auc, pre, rec, test_acc,f1
+    return mcc, roc_auc, pr_auc, pre, rec, test_acc,f1
 
 
 def evaluate(config, model, data_iter, test=False):
@@ -138,6 +146,10 @@ def evaluate(config, model, data_iter, test=False):
         confusion = metrics.confusion_matrix(labels_all, predict_all)
         # np.savez_compressed('./tmp_lable_prob',label=labels_all,prob=maxprob_all,pre=predict_all, sftmxpre = idx_sftmx_all)
         # roc-auc, pr-auc, f1
+        mcc = matthews_corrcoef(labels_all, predict_all)
+        acc = metrics.accuracy_score(labels_all, predict_all)
         roc_auc, pr_auc, f1, pre, rec = utils.auc_roc_pr_f1(labels_all, predict_all ,prob_all)
-        return acc, loss_total / len(data_iter), report, confusion, roc_auc, pr_auc, f1, pre, rec
+        # save
+        np.savez('../data/savePictureData/%s.npz'%(config.model_name + '_' + time.strftime('%m-%d_%H.%M', time.localtime()) + '_' + str(roc_auc)),labels_all=labels_all, predict_all=predict_all, prob_all=prob_all)
+        return mcc, acc, loss_total / len(data_iter), report, confusion, roc_auc, pr_auc, f1, pre, rec,labels_all, predict_all ,prob_all
     return acc, loss_total / len(data_iter), roc_auc

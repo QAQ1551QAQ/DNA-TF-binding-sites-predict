@@ -60,7 +60,7 @@ class Model(nn.Module):
         out = self.embedding(x).permute(0, 2, 1) # [batch_size, embedding_dim, seq_len]
         # CNN
         cnn_output = self.cnn(out) # [batch_size, seq_len, embedding_dim]
-        # print(cnn_output.shape)
+        print(cnn_output.shape)
         bilstm_out, _ = self.BiLSTM(cnn_output)
         bilstm_out = bilstm_out[:, -1, :]
         out = self.Prediction(bilstm_out)

@@ -1,9 +1,9 @@
 # DNA-TF-binding-sites-predict
-transcription factor binding sites; residual learning; attention mechanism; CNN; BiLSTM; KAN
+transcription factor binding sites; CNN; BiLSTM; KAN; residual connections
 
 # Environmental requirements：
-  1. Python 3.9.7
-  2. pytorch 2.2.2+cu121
+  1. Python 3.12.7
+  2. pytorch 2.5.0
   3. See requirements.txt for other python packages that need to be installed.
 
 # required data：
@@ -26,29 +26,43 @@ transcription factor binding sites; residual learning; attention mechanism; CNN;
 
 ├── logs_run # log file
 
+├── efficient_kan # kan code
+
 ├── models # models
+
+│ └── C-KAN.py                 # (dna2vec) + C(ConvBlock1/2/3) + KAN
+
+│ └── C-KAN-nonD2v.py          # (Non-dna2vec) + C(ConvBlock1/2/3) + KAN
+
+│ └── C-KAN-ConvBlock1.py      # (dna2vec) + C(ConvBlock1) + KAN
+
+│ └── C-KAN-ConvBlock2.py      # (dna2vec) + C(ConvBlock2) + KAN
+
+│ └── C-KAN-ConvBlock3.py      # (dna2vec) + C(ConvBlock3) + KAN
+
+│ └── C-KAN-ConvBlock2-k2.py   # (dna2vec) + C(ConvBlock2)-kernel*2 + KAN
+
+│ └── C-KAN-ConvBlock2-k3.py   # (dna2vec) + C(ConvBlock2)-kernel*3 + KAN
+
+│ └── CBR-KAN.py               # (dna2vec) + C(ConvBlock1/2/3) + BiLSTM + Residual + KAN
+
+│ └── CB-KAN_ no-Residual.py   # (dna2vec) + C(ConvBlock1/2/3) + BiLSTM + KAN
+
+│ └── CBR-MLP.py               # (dna2vec) + C(ConvBlock1/2/3) + BiLSTM + Residual + MLP
 
 │ └── DeepBind.py              # Single-layer CNN + Two-layer MLP
 
-│ └── DeepBind-KAN.py          # Single-layer CNN + KAN
-
 │ └── DanQ.py                  # Single-layer CNN + BiLSTM + Two-layer MLP
-
-│ └── DanQ-KAN.py              # Single-layer CNN + BiLSTM + KAN
 
 │ └── DeepD2V.py               # Three-layer CNN + BiLSTM + Two-layer MLP
 
-│ └── DeepD2V-KAN.py           # Three-layer CNN + BiLSTM + KAN
-
 │ └── DeepSEA.py               # Three-layer CNN + Two-layer MLP
 
-│ └── DeepSEA-KAN.py           # Three-layer CNN + KAN
+│ └── CNN.py                   # CNN
 
-│ └── RA-KAN.py                # BiLSTM + attention + KAN
+│ └── BiLSTM.py                # BiLSTM
 
-│ └── CRA-KAN(ConvBlock1).py   # ConvBlock1 + BiLSTM + attention + KAN
-
-│ └── CRA-KAN.py               # ConvBlock1/2/3 concatenation +  BiLSTM + attention + KAN
+│ └── BiGRU.py                 # BiGRU
 
 ├── run_all.py # run all datasets
 
