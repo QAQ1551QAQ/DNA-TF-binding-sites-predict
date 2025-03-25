@@ -13,7 +13,7 @@ class Model(nn.Module):
         self.Conv2 = nn.Conv1d(in_channels=320, out_channels=480, kernel_size=8)
         self.Conv3 = nn.Conv1d(in_channels=480, out_channels=960, kernel_size=8)
         self.Maxpool = nn.MaxPool1d(kernel_size=4, stride=4)
-        config.learning_rate = 0.001
+        
         self.Drop1 = nn.Dropout(p=0.2)
         self.Drop2 = nn.Dropout(p=0.5)
         self.Linear1 = nn.Linear(2880, 32)

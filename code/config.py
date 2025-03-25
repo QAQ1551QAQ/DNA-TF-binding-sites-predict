@@ -37,7 +37,7 @@ num_filters = 256     # 卷积核数量
 filter_sizes = [1, 3, 5, 7]    # 卷积核大小
 dropout = 0.2
 num_classes = 2      # 类别数量
-learning_rate = 0.0005
+learning_rate = 0.001
 class_list = ['negative 0', 'positive 1']         # 类别名称
 
 # RNN

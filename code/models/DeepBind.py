@@ -11,7 +11,7 @@ class Model(nn.Module):
             self.embedding = nn.Embedding(config.len_vocab, config.embed, padding_idx=config.len_vocab - 1)
         self.Conv1 = nn.Conv1d(in_channels=100, out_channels=32, kernel_size=8)
         self.Maxpool = nn.MaxPool1d(2)
-        config.learning_rate = 0.001
+        
         self.Drop1 = nn.Dropout(p=0.2)             
         self.Linear1 = nn.Linear(3040, 32)
         self.Linear2 = nn.Linear(32, 2)

@@ -10,7 +10,7 @@ class Model(nn.Module):
             self.embedding = nn.Embedding.from_pretrained(config.embedding_pretrained, freeze=False)
         else:
             self.embedding = nn.Embedding(config.len_vocab, config.embed, padding_idx=config.len_vocab - 1)
-        config.learning_rate = 0.001
+        
         self.cnn = nn.Sequential(
             nn.Conv1d(in_channels=100,
                       out_channels=64,

@@ -16,7 +16,7 @@ class Model(nn.Module):
                                  batch_first=True,
                                  dropout=0.5,
                                  bidirectional=True) 
-        config.learning_rate = 0.001
+        
         self.Linear1 = nn.Linear(64, 32)
         self.Linear2 = nn.Linear(32, 2)
 
