@@ -9,6 +9,7 @@ transcription factor binding sites; CNN; BiLSTM; KAN; residual connections
 # required data：
   1. rawdata download link： 链接:https://pan.baidu.com/s/1xPzWjk3xNQJzEHcpysIjgw  密码:usch
   2. Word vector 3mer.txt download link： 链接:https://pan.baidu.com/s/1EN5bxXcKACGzpKPmQJ-QHg  密码:cie9
+  3. Three different cell line data acquired on GEO: GSM1873040 (LNCaP), GSM2437758 (MCF - 7) and GSM2067524 (A549), the path is ./data/GEO_data
 
 # Operation mode:
   1. Download 50 public ChIP-seq data and save it to data/rawdata, run code/data_process.py to process the data into the corresponding format.
